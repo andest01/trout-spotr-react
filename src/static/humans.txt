@@ -2,7 +2,7 @@
 
 # TEAM
 
-    <name> -- <role> -- <twitter>
+    <stu> -- <programmer> -- <@andest01>
 
 # THANKS
 

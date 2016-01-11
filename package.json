@@ -1,7 +1,7 @@
 {
-  "name": "react-redux-starter-kit",
+  "name": "TroutSpotr",
   "version": "1.0.0",
-  "description": "Get started with React, Redux, and React-Router!",
+  "description": "Trout streams done quick",
   "main": "index.js",
   "engines": {
     "node": ">=5.0.0",
@@ -42,7 +42,10 @@
     "redux-simple-router": "^1.0.1",
     "redux-thunk": "^1.0.0",
     "url": "^0.11.0",
-    "yargs": "^3.18.0"
+    "yargs": "^3.18.0",
+    "axios": "^0.8.1",
+    "topojson": "^1.6.19",
+    "d3": "^3.5.12"
   },
   "devDependencies": {
     "babel-core": "^6.3.17",
