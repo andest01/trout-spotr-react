@@ -45,7 +45,9 @@
     "yargs": "^3.18.0",
     "axios": "^0.8.1",
     "topojson": "^1.6.19",
-    "d3": "^3.5.12"
+    "d3": "^3.5.12",
+    "express": "~3.0.0",
+    "gzippo": "^0.2.0"
   },
   "devDependencies": {
     "babel-core": "^6.3.17",
