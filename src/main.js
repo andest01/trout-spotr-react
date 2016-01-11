@@ -5,7 +5,9 @@ import { syncReduxAndRouter } from 'redux-simple-router';
 import routes from 'ui/routes';
 import Root from 'ui/containers/Root';
 import configureStore from 'ui/redux/configureStore';
+import injectTapEventPlugin from 'react-tap-event-plugin';
 
+injectTapEventPlugin();
 const history = useBasename(createHistory)({
   basename: __BASENAME__
 });
