@@ -13,7 +13,7 @@ import StreamListContainer from 'ui/streams/streamList/StreamList.container';
 
 export default (
   <Route path='/' component={CoreLayout}>
-    <IndexRoute component={HomeView} />
+    <IndexRoute component={StreamListContainer} />
     <Route path='/404' component={NotFoundView} />
     <Route path='/streams' component={StreamListContainer} />
     <Redirect from='*' to='/404' />

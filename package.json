@@ -25,7 +25,7 @@
     "type": "git",
     "url": "git+https://github.com/davezuko/react-redux-starter-kit.git"
   },
-  "author": "David Zukowski <david@zuko.me> (http://zuko.me)",
+  "author": "Stuart Anderson <andest01@gmail.com>",
   "license": "MIT",
   "dependencies": {
     "debug": "^2.2.0",
