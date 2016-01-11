@@ -19,7 +19,7 @@
     "test": "node -r dotenv/config ./node_modules/karma/bin/karma start bin/karma.js",
     "test:dev": "npm run test -- --watch",
     "deploy": "npm run test && npm run clean && npm run compile",
-    "postinstall": "npm run clean && npm run compile"
+    "postinstall": "npm run test && npm run clean && npm run compile"
   },
   "repository": {
     "type": "git",
@@ -48,9 +48,7 @@
     "topojson": "^1.6.19",
     "d3": "^3.5.12",
     "express": "~3.0.0",
-    "gzippo": "^0.2.0"
-  },
-  "devDependencies": {
+    "gzippo": "^0.2.0",
     "babel-core": "^6.3.17",
     "babel-eslint": "^5.0.0-beta6",
     "babel-loader": "^6.2.0",
@@ -106,5 +104,8 @@
     "webpack": "1.12.9",
     "webpack-dev-middleware": "^1.4.0",
     "webpack-hot-middleware": "^2.6.0"
+  },
+  "devDependencies": {
+    
   }
 }
