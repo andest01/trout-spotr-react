@@ -15,7 +15,7 @@ export default function configureStore (initialState) {
       middleware,
       window.devToolsExtension
         ? window.devToolsExtension()
-        : require('ui/containers/DevTools').default.instrument()
+        : require('ui/devTools/DevTools').default.instrument()
     );
   } else {
     createStoreWithMiddleware = compose(middleware);

@@ -1,15 +1,12 @@
 'use strict';
 import React from 'react';
 import { connect } from 'react-redux';
-// import { Link } from 'react-router';
 import { actions as streamActions } from '../streams.actions';
+import StreamFilterComponent from '../filter/StreamFilter.component';
+import StreamItemContainer from './item/StreamItem.container';
+// import StreamItemContainer from './streamItem/StreamItemContainer';
 // import classes from './HomeView.scss';
 
-// We define mapStateToProps where we'd normally use
-// the @connect decorator so the data requirements are clear upfront, but then
-// export the decorated component after the main class definition so
-// the component can be tested w/ and w/o being connected.
-// See: http://rackt.github.io/redux/docs/recipes/WritingTests.html
 const mapStateToProps = (state) => {
   let obj = {
     streamsGeoJSON: state.streamList.streamsGeoJSON,
@@ -18,7 +15,8 @@ const mapStateToProps = (state) => {
     statesGeoJSON: state.streamList.statesGeoJSON,
     tableOfContents: state.streamList.tableOfContents,
     selectedState: state.streamList.selectedState,
-    selectedRegion: state.streamList.selectedRegion
+    selectedRegion: state.streamList.selectedRegion,
+    filter: state.streamList.filter
   };
   return obj;
 };
@@ -31,8 +29,10 @@ export class StreamListContainer extends React.Component {
     statesGeoJSON: React.PropTypes.object.isRequired,
     selectedState: React.PropTypes.object.isRequired,
     selectedRegion: React.PropTypes.object.isRequired,
-    tableOfContents: React.PropTypes.object.isRequired,
+    tableOfContents: React.PropTypes.array.isRequired,
+    filter: React.PropTypes.object.isRequired,
 
+    filterStreams: React.PropTypes.func.isRequired,
     loadStreams: React.PropTypes.func.isRequired,
     selectStream: React.PropTypes.func.isRequired,
     selectRegion: React.PropTypes.func.isRequired
@@ -40,7 +40,7 @@ export class StreamListContainer extends React.Component {
 
   render () {
     let regions = [];
-    let mn = this.props.tableOfContents['49'];
+    let mn = this.props.tableOfContents[0];
     if (mn != null) {
       regions = mn.children;
     }
@@ -56,6 +56,13 @@ export class StreamListContainer extends React.Component {
           Load Streams
         </button>
         <div>
+          <StreamFilterComponent
+            selectedRegion={this.props.selectedRegion}
+            filter={this.props.filter}
+            tableOfContents={this.props.tableOfContents}
+            filterStreams={this.props.filterStreams}/>
+        </div>
+        <div>
         {
           regions.map((region) => {
             return (<button onClick={() => this.props.selectRegion(region)} key={region.id}> {region.name}</button>);
@@ -69,7 +76,7 @@ export class StreamListContainer extends React.Component {
                         <h3>{county.name}</h3>
                         <ul>
                           {
-                              county.children.map((stream) => { return (<li key={stream.id}>{stream.name}</li>); })
+                              county.children.filter((stream) => stream.visible).map((stream) => { return (<li key={stream.id}><StreamItemContainer stream={stream}/></li>); })
                           }
                         </ul>
                       </div>);

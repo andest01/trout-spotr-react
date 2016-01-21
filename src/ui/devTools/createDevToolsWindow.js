@@ -1,5 +1,5 @@
 import { Provider } from 'react-redux';
-import DevTools from '../../containers/DevToolsWindow';
+import DevTools from '../../devTools/DevToolsWindow';
 
 export default function createDevToolsWindow (store) {
   const win = window.open(
@@ -24,5 +24,5 @@ export default function createDevToolsWindow (store) {
       </Provider>
       , win.document.getElementById('react-devtools-root')
     );
-  }, 10);
+  }, 40);
 }

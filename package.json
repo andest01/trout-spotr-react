@@ -48,6 +48,7 @@
     "axios": "^0.8.1",
     "topojson": "^1.6.19",
     "d3": "^3.5.12",
+    "lodash": "^4.0.0",
     "express": "~3.0.0",
     "gzippo": "^0.2.0",
     "babel-core": "^6.3.17",
@@ -104,7 +105,10 @@
     "url-loader": "^0.5.6",
     "webpack": "1.12.9",
     "webpack-dev-middleware": "^1.4.0",
-    "webpack-hot-middleware": "^2.6.0"
+    "webpack-hot-middleware": "^2.6.0",
+    "lscache": "1.0.5",
+    "q": "1.4.1",
+    "react-responsive": "1.1.0"
   },
   "devDependencies": {
     

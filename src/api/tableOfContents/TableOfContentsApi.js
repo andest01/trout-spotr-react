@@ -2,26 +2,40 @@ import BaseApi from '../BaseApi';
 import _ from 'lodash';
 import topojson from 'topojson';
 import HierarchicalGeometryViewModel from './HierarchicalGeometryViewModel';
-
+import StreamGeometryViewModel from './StreamGeometryViewModel';
+import { default as Q } from 'q';
 export class TableOfContentsApi extends BaseApi {
 
-  constructor (settings, cache = null) {
-    super(settings, cache);
+  constructor (settings) {
+    super(settings);
   }
 
   getData () {
-    return super.get('tableOfContents.topo.json')
-      .then((data) => {
-        let regionTopoJson = data;
-        var state = topojson.feature(regionTopoJson, regionTopoJson.objects.state);
-        var regions = topojson.feature(regionTopoJson, regionTopoJson.objects.region);
-        var counties = topojson.feature(regionTopoJson, regionTopoJson.objects.county);
-        var streams = topojson.feature(regionTopoJson, regionTopoJson.objects.streamProperties);
+    let key = 'tableOfContents.topo.json';
+    let cacheCandidate = this.cache.get(key);
+    let promise = null;
+    if (cacheCandidate != null) {
+      promise = Q.fcall(() => { return cacheCandidate; });
+    } else {
+      promise = super.get('tableOfContents.topo.json')
+        .then((data) => {
+          this.cache.set(key, data);
+          return data;
+        });
+    }
 
-        return {
-          state, regions, counties, streams
-        };
-      });
+    return promise.then(data => {
+      let regionTopoJson = data;
+      let state = topojson.feature(regionTopoJson, regionTopoJson.objects.state);
+      let regions = topojson.feature(regionTopoJson, regionTopoJson.objects.region);
+      let counties = topojson.feature(regionTopoJson, regionTopoJson.objects.county);
+      let streams = topojson.feature(regionTopoJson, regionTopoJson.objects.streamProperties);
+      let tableOfContents = {
+        state, regions, counties, streams
+      };
+
+      return tableOfContents;
+    });
   }
 
   getTableOfContents (data) {
@@ -44,7 +58,7 @@ export class TableOfContentsApi extends BaseApi {
         stateModel.geometry = feature;
         return stateModel;
       })
-      .indexBy('id')
+      .keyBy('id')
       .value();
 
     let regionHash = _(regions.features)
@@ -58,7 +72,7 @@ export class TableOfContentsApi extends BaseApi {
         return regionModel;
       })
       .sortBy('name')
-      .indexBy('id')
+      .keyBy('id')
       .value();
 
     let countyhash = _(counties.features)
@@ -76,7 +90,7 @@ export class TableOfContentsApi extends BaseApi {
         return countyModel;
       })
       .sortBy('name')
-      .indexBy('id')
+      .keyBy('id')
       .value();
 
     let countyByRegion = _(countyhash)
@@ -93,11 +107,12 @@ export class TableOfContentsApi extends BaseApi {
 
     let streamHash = _(streams.features)
       .map((feature) => {
-        let streamModel = new HierarchicalGeometryViewModel();
+        let streamModel = new StreamGeometryViewModel();
         let properties = feature.properties;
         streamModel.id = properties.Id;
         streamModel.name = properties.Name;
         streamModel.geometry = feature;
+        streamModel.visible = true;
         streamModel.centroidLongitude = properties.CentroidLongitude;
         streamModel.centroidLatitude = properties.CentroidLatitude;
         _.extend(streamModel, properties);
@@ -105,7 +120,7 @@ export class TableOfContentsApi extends BaseApi {
         return streamModel;
       })
       .sortBy('name')
-      .indexBy('id')
+      .keyBy('id')
       .value();
 
     _.forEach(stateHash, (state) => {
@@ -132,8 +147,7 @@ export class TableOfContentsApi extends BaseApi {
         // what to do about the parent tho?
       });
     });
-
-    return stateHash;
+    return {states: _(stateHash).values().value(), streams: _(streamHash).values().value()};
   }
 }
 

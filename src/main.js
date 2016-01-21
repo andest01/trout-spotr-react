@@ -3,8 +3,8 @@ import ReactDOM from 'react-dom';
 import { createHistory, useBasename } from 'history';
 import { syncReduxAndRouter } from 'redux-simple-router';
 import routes from 'ui/routes';
-import Root from 'ui/containers/Root';
-import configureStore from 'ui/redux/configureStore';
+import Root from 'ui/Root';
+import configureStore from 'ui/configureStore';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 
 injectTapEventPlugin();

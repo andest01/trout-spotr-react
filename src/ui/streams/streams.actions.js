@@ -1,13 +1,20 @@
 'use strict';
-import { createAction, handleActions } from 'redux-actions';
+import {
+  createAction, handleActions
+}
+from 'redux-actions';
 import TableOfContentsApi from 'api/tableOfContents/TableOfContentsApi';
+import _ from 'lodash';
 
 // ------------------------------------
 // Constants
 // ------------------------------------
 export const STREAMS_SET_STREAMS = 'STREAMS_SET_STREAMS';
+
 export const STREAMS_SELECT_STREAM = 'STREAMS_SELECT_STREAM';
 export const STREAMS_SELECT_REGION = 'STREAMS_SELECT_REGION';
+
+export const STREAMS_FILTER_STREAMS = 'STREAMS_FILTER_STREAMS';
 
 // ------------------------------------
 // Actions
@@ -15,6 +22,7 @@ export const STREAMS_SELECT_REGION = 'STREAMS_SELECT_REGION';
 export const setStreams = createAction(STREAMS_SET_STREAMS);
 export const selectStream = createAction(STREAMS_SELECT_STREAM);
 export const selectRegion = createAction(STREAMS_SELECT_REGION);
+export const filterStreams = createAction(STREAMS_FILTER_STREAMS);
 
 // ------------------------------------
 // Constants
@@ -41,16 +49,11 @@ const DEFAULT_STREAM_STATE = {
   statesGeoJSON: {},
   selectedState: {},
   selectedRegion: {},
-  tableOfContents: {},
+  tableOfContents: [],
+  streamHash: [],
   filter: DEFAULT_STREAM_SEARCH_STATE
 };
 
-// This is a thunk, meaning it is a function that immediately
-// returns a function for lazy evaluation. It is incredibly useful for
-// creating async actions, especially when combined with redux-thunk!
-// NOTE: This is solely for demonstration purposes. In a real application,
-// you'd probably want to dispatch an action of COUNTER_DOUBLE and let the
-// reducer take care of this logic.
 export const loadStreams = () => {
   return (dispatch, getState) => {
     TableOfContentsApi.getData()
@@ -62,7 +65,8 @@ export const actions = {
   setStreams,
   loadStreams,
   selectStream,
-  selectRegion
+  selectRegion,
+  filterStreams
 };
 
 // ------------------------------------
@@ -70,22 +74,44 @@ export const actions = {
 // ------------------------------------
 export default handleActions({
   [STREAMS_SET_STREAMS]:
-    (state, { payload }) => {
-      var tableOfContents = TableOfContentsApi.getTableOfContents(payload);
-      return {
-        ...state,
-        streamsGeoJSON: payload.streams,
-        countiesGeoJSON: payload.counties,
-        statesGeoJSON: payload.state, // for now! :)
-        regionsGeoJSON: payload.regions,
-        tableOfContents: tableOfContents
-      };
-    },
-  [STREAMS_SELECT_STREAM]:
-    (state, { payload }) => state,
-  [STREAMS_SELECT_REGION]:
-    (state, { payload }) => {
-      console.log('region selected', payload);
-      return { ...state, selectedRegion: payload };
-    }
+  (state, {
+    payload
+  }) => {
+    var tableOfContents = TableOfContentsApi.getTableOfContents(payload);
+    return {
+      ...state,
+      streamsGeoJSON: payload.streams,
+      countiesGeoJSON: payload.counties,
+      statesGeoJSON: payload.state, // for now! :)
+      regionsGeoJSON: payload.regions,
+      tableOfContents: tableOfContents.states,
+      streamHash: tableOfContents.streams
+    };
+  }, [STREAMS_SELECT_STREAM]:
+  (state, {
+    payload
+  }) => state, [STREAMS_SELECT_REGION]:
+  (state, {
+    payload
+  }) => {
+    return {...state, selectedRegion: payload
+    };
+  }, [STREAMS_FILTER_STREAMS]: (state, { payload }) => {
+    let newFilter = _.lowerCase(payload || '');
+    let { filter } = state;
+
+    // var filteredStreams = _(state.streamHash).map(stream => {
+    //   let isVisible = true;
+    //   if (stream.name == null || stream.name.length === 0) {
+    //     isVisible = true;
+    //   } else {
+    //     isVisible = stream.name.toLowerCase().indexOf(newFilter) >= 0;
+    //   }
+    //   stream.visible = isVisible;
+    //   return stream;
+    // }).value();
+
+    filter = { ...filter, searchText: newFilter };
+    return { ...state, filter };
+  }
 }, DEFAULT_STREAM_STATE);

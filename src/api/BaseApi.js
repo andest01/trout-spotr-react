@@ -1,10 +1,11 @@
 import axios from 'axios';
+import lscache from 'lscache';
 // import config from '../config';
 
 export default class BaseApi {
-  constructor (settings, cache) {
+  constructor (settings) {
     this.settings = settings;
-    this.cache = cache;
+    this.cache = lscache;
   }
 
   constructEndpoint (endpoint) {
@@ -16,7 +17,7 @@ export default class BaseApi {
   }
 
   clearCache () {
-    return;
+    this.lscache.flush();
   }
 
   get (endpoint, data) {
