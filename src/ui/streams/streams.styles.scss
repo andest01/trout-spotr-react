@@ -1,0 +1,52 @@
+// .stream-list {
+//   background-color: red;
+//   width: 400px;
+//   height: 100%;
+//   min-height: 100%;
+//   max-width: 100%;
+//   float: left;
+//   display: block;
+// }
+
+.layout {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  align-items: stretch;
+  width: 100%;
+  position: absolute;
+  overflow: hidden;
+}
+
+.sidebar {
+  order: 1;
+  background-color: green;
+  min-width: 300px;
+  max-width: 400px;
+}
+
+.lrg-content {
+  order: 2;
+  background-color: gray;
+  flex-grow: 1;
+}
+
+.flexbox-parent {
+  background-color: black;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  height: 100vh;
+}
+
+.flexbox-top {
+  background-color: orange;
+}
+
+.flexbox-bottom {
+  background-color: green;
+  flex-grow: 1;
+  overflow-y: auto;
+  height: 100%;
+}

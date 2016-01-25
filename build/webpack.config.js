@@ -133,8 +133,12 @@ webpackConfig.module.loaders.push({
   ]
 });
 
+console.log('==========================================');
+let myPathOfInterest = paths.client('ui');
+console.log(myPathOfInterest);
+
 webpackConfig.sassLoader = {
-  includePaths: paths.client('styles')
+  includePaths: myPathOfInterest
 };
 webpackConfig.postcss = [
   cssnano({

@@ -1,10 +1,9 @@
 'use strict';
 import React from 'react';
 import _ from 'lodash';
-// import { Link } from 'react-router';
+import { Link } from 'react-router';
 import { connect } from 'react-redux';
 import { actions as streamActions } from '../streams.actions';
-import styles from './regionMap.style.scss';
 
 const mapStateToProps = (state) => {
   let obj = {
@@ -20,10 +19,7 @@ const mapStateToProps = (state) => {
   return obj;
 };
 
-export const RegionMapComponent = React.createClass({
-  // propTypes: {
-  //   stream: React.PropTypes.object.isRequired
-  // },
+export const StateContainer = React.createClass({
 
   propTypes: {
     streamsGeoJSON: React.PropTypes.object.isRequired,
@@ -39,7 +35,8 @@ export const RegionMapComponent = React.createClass({
     loadStreams: React.PropTypes.func.isRequired,
     selectStream: React.PropTypes.func.isRequired,
     selectRegion: React.PropTypes.func.isRequired,
-    params: React.PropTypes.object
+    params: React.PropTypes.object,
+    children: React.PropTypes.element
   },
 
   getRegions (stateId) {
@@ -58,64 +55,31 @@ export const RegionMapComponent = React.createClass({
     return children;
   },
 
-  getCounties (stateId, regionId) {
-    if (regionId == null) {
-      return [];
-    }
-
-    let regions = this.getRegions(stateId);
-    if (regions == null || regions.length === 0) {
-      return [];
-    }
-
-    var indexOfChange = _.findIndex(regions, region => region.shortName === regionId);
-    if (indexOfChange < 0) {
-      return [];
-    }
-
-    var soughtState = regions[indexOfChange];
-    let { children } = soughtState;
-    return children;
-  },
-
+  // {this.props.params.stateId}
   render () {
     let stateId = this.props.params.stateId;
-    let regionId = this.props.params.regionId;
+    let regions = this.getRegions(stateId);
+    if (regions == null || regions.length === 0) {
+      return null;
+    }
 
-    var counties = this.getCounties(stateId, regionId);
-    console.log(counties);
-
+    let rootUrl = `/streams/${stateId}/`;
     return (
-            <div className={styles['stream-list']} >
+      <div>
+        <div>STATE {this.props.params.stateId}</div>
         {
-          counties.map(county => {
-            let countyId = county.id;
-            let name = county.name;
-            return (
-                <div>
-                  <h3 key={countyId}>{name}</h3>
-                  <div >
-                    <ul>
-                    {
-                      county.children.map(stream => {
-                        let streamId = stream.id;
-                        let name = stream.name;
-                        return (
-                            <li key={streamId}>{name}</li>
-                          );
-                      })
-                    }
-                    </ul>
-                  </div>
-                </div>
-              );
+          regions.map(r => {
+            let id = r.id;
+            let shortName = r.shortName;
+            let name = r.name;
+            return (<div key={id}><Link to={rootUrl + shortName}>{name}</Link></div>);
           })
         }
+        {this.props.children}
       </div>);
   }
 });
 
-// export default RegionMapComponent;
+export default connect(mapStateToProps, streamActions)(StateContainer);
 
-export default connect(mapStateToProps, streamActions)(RegionMapComponent);
-
+// export default StateContainer;

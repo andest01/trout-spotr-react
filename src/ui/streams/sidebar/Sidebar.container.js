@@ -8,7 +8,6 @@ export const SidebarContainer = React.createClass({
   },
 
   render () {
-    let stream = this.props.stream;
     return (<div>sidebar</div>);
   }
 });
