@@ -21,15 +21,15 @@ const StreamItemContainer = React.createClass({
   },
 
   componentDidMount () {
-    console.log('stream component is loading');
+    // console.log('stream component is loading');
   },
 
   componentWillUnmount () {
-    console.log('stream component is unloading');
+    // console.log('stream component is unloading');
   },
 
   render () {
-    console.log(this);
+    // console.log(this);
     return (
       <StreamItemComponent stream={this.props.stream} />
     );

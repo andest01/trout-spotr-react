@@ -13,6 +13,8 @@ export const STREAMS_SET_STREAMS = 'STREAMS_SET_STREAMS';
 
 export const STREAMS_SELECT_STREAM = 'STREAMS_SELECT_STREAM';
 export const STREAMS_SELECT_REGION = 'STREAMS_SELECT_REGION';
+export const STREAMS_SELECT_STATE = 'STREAMS_SELECT_STATE';
+export const STREAMS_SELECT_STATE_AND_REGION = 'STREAMS_SELECT_STATE_AND_REGION';
 
 export const STREAMS_FILTER_STREAMS = 'STREAMS_FILTER_STREAMS';
 
@@ -22,6 +24,8 @@ export const STREAMS_FILTER_STREAMS = 'STREAMS_FILTER_STREAMS';
 export const setStreams = createAction(STREAMS_SET_STREAMS);
 export const selectStream = createAction(STREAMS_SELECT_STREAM);
 export const selectRegion = createAction(STREAMS_SELECT_REGION);
+export const selectState = createAction(STREAMS_SELECT_STATE);
+export const selectStateAndRegion = createAction(STREAMS_SELECT_STATE_AND_REGION);
 export const filterStreams = createAction(STREAMS_FILTER_STREAMS);
 
 // ------------------------------------
@@ -49,15 +53,24 @@ const DEFAULT_STREAM_STATE = {
   statesGeoJSON: {},
   selectedState: {},
   selectedRegion: {},
+  selectedStream: {},
   tableOfContents: [],
   streamHash: [],
+  streamsBySlug: {},
+  stateHash: {},
+  regionHash: {},
   filter: DEFAULT_STREAM_SEARCH_STATE
 };
 
-export const loadStreams = () => {
+export const loadStreams = ({stateId, regionId, streamId}) => {
   return (dispatch, getState) => {
-    TableOfContentsApi.getData()
-      .then((model) => dispatch(setStreams(model)));
+    return TableOfContentsApi.getData()
+      .then(model => {
+        dispatch(setStreams({model, stateId, regionId, streamId}));
+        return model;
+      }).catch(error => {
+        console.log('a terrible problem occured', error);
+      });
   };
 };
 
@@ -66,52 +79,105 @@ export const actions = {
   loadStreams,
   selectStream,
   selectRegion,
-  filterStreams
+  filterStreams,
+  selectState,
+  selectStateAndRegion
 };
 
 // ------------------------------------
 // Reducer
 // ------------------------------------
-export default handleActions({
-  [STREAMS_SET_STREAMS]:
-  (state, {
-    payload
-  }) => {
-    var tableOfContents = TableOfContentsApi.getTableOfContents(payload);
-    return {
-      ...state,
-      streamsGeoJSON: payload.streams,
-      countiesGeoJSON: payload.counties,
-      statesGeoJSON: payload.state, // for now! :)
-      regionsGeoJSON: payload.regions,
+
+var actionHandlers = {
+  [STREAMS_SET_STREAMS]: (state, { payload }) => {
+    let { model, stateId, regionId, streamId } = payload;
+    let tableOfContents = TableOfContentsApi.getTableOfContents(model);
+    let streamData = {
+      streamsGeoJSON: model.streams,
+      countiesGeoJSON: model.counties,
+      statesGeoJSON: model.state, // for now! :)
+      regionsGeoJSON: model.regions,
       tableOfContents: tableOfContents.states,
-      streamHash: tableOfContents.streams
+      streamHash: tableOfContents.streams,
+      streamsBySlug: tableOfContents.streamsBySlug,
+      stateHash: _.keyBy(tableOfContents.states, 'shortName'),
+      regionHash: _.keyBy(tableOfContents.regions, 'shortName')
     };
-  }, [STREAMS_SELECT_STREAM]:
-  (state, {
-    payload
-  }) => state, [STREAMS_SELECT_REGION]:
-  (state, {
-    payload
-  }) => {
-    return {...state, selectedRegion: payload
+
+    let composedState = Object.assign({}, state, streamData);
+    let selectedStateAndRegion = {};
+    if (streamId != null) {
+      selectedStateAndRegion = actionHandlers[STREAMS_SELECT_STREAM](composedState, {payload: {stateId, regionId, streamId}});
+    } else if (regionId != null) {
+      selectedStateAndRegion = actionHandlers[STREAMS_SELECT_REGION](composedState, {payload: {stateId, regionId}});
+    } else if (stateId != null) {
+      selectedStateAndRegion = actionHandlers[STREAMS_SELECT_REGION](composedState, {payload: {stateId}});
+    } else {
+
+    }
+    // let selectedStateAndRegion = actionHandlers[STREAMS_SELECT_STATE](composedState, {payload: {stateId, regionId} });
+    let finalState = Object.assign({}, composedState, selectedStateAndRegion);
+    return finalState;
+  },
+  [STREAMS_SELECT_STREAM]: (state, { payload }) => {
+    // let newState = {
+    //   selectedStream: DEFAULT_STREAM_STATE.selectedStream
+    // };
+    let newState = actionHandlers[STREAMS_SELECT_REGION](state, {payload});
+    if (payload.streamId == null) {
+      return newState;
+    }
+
+    // let names = payload.streamId.split('@');
+
+    // let streamId = _.lowerCase(names[0]) + '@' + names[1];
+    let streamId = payload.streamId;
+    let isStream = _.has(state.streamsBySlug, streamId);
+    if (isStream) {
+      newState.selectedStream = state.streamsBySlug[streamId];
+    }
+
+    let composedState = Object.assign({}, state, newState);
+    return composedState;
+  },
+  [STREAMS_SELECT_REGION]: (state, { payload }) => {
+    // let newState = {
+    //   selectedRegion: DEFAULT_STREAM_STATE.selectedRegion,
+    //   selectedStream: DEFAULT_STREAM_STATE.selectedStream
+    // };
+    let newState = actionHandlers[STREAMS_SELECT_STATE](state, {payload});
+    let regionId = _.lowerCase(payload.regionId);
+    let isRegion = _.has(state.regionHash, regionId);
+    if (isRegion) {
+      newState.selectedRegion = state.regionHash[regionId];
+    }
+    let composedState = Object.assign({}, state, newState);
+    return composedState;
+  },
+  [STREAMS_SELECT_STATE]: (state, { payload }) => {
+    let newState = {
+      selectedState: DEFAULT_STREAM_STATE.selectedState,
+      selectedRegion: DEFAULT_STREAM_STATE.selectedRegion,
+      selectedStream: DEFAULT_STREAM_STATE.selectedStream
     };
-  }, [STREAMS_FILTER_STREAMS]: (state, { payload }) => {
+    let stateId = _.lowerCase(payload.stateId);
+    let regionId = _.lowerCase(payload.regionId);
+    if (stateId != null && _.has(state.stateHash, stateId)) {
+      // attempt to select the actual state.
+      newState.selectedState = state.stateHash[stateId];
+    } if (stateId != null && regionId != null && _.has(state.regionHash, regionId)) {
+      // attempt to select the actual region.
+      newState.selectedRegion = state.regionHash[regionId];
+    }
+
+    let composedState = Object.assign({}, state, newState);
+    return composedState;
+  },
+  [STREAMS_FILTER_STREAMS]: (state, { payload }) => {
     let newFilter = _.lowerCase(payload || '');
     let { filter } = state;
-
-    // var filteredStreams = _(state.streamHash).map(stream => {
-    //   let isVisible = true;
-    //   if (stream.name == null || stream.name.length === 0) {
-    //     isVisible = true;
-    //   } else {
-    //     isVisible = stream.name.toLowerCase().indexOf(newFilter) >= 0;
-    //   }
-    //   stream.visible = isVisible;
-    //   return stream;
-    // }).value();
-
     filter = { ...filter, searchText: newFilter };
     return { ...state, filter };
   }
-}, DEFAULT_STREAM_STATE);
+};
+export default handleActions(actionHandlers, DEFAULT_STREAM_STATE);

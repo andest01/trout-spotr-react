@@ -3,7 +3,10 @@ import _ from 'lodash';
 import topojson from 'topojson';
 import HierarchicalGeometryViewModel from './HierarchicalGeometryViewModel';
 import StreamGeometryViewModel from './StreamGeometryViewModel';
-import { default as Q } from 'q';
+import {
+  default as Q
+}
+from 'q';
 export class TableOfContentsApi extends BaseApi {
 
   constructor (settings) {
@@ -15,7 +18,7 @@ export class TableOfContentsApi extends BaseApi {
     let cacheCandidate = this.cache.get(key);
     let promise = null;
     if (cacheCandidate != null) {
-      promise = Q.fcall(() => { return cacheCandidate; });
+      promise = Q.when(cacheCandidate);
     } else {
       promise = super.get('tableOfContents.topo.json')
         .then((data) => {
@@ -24,7 +27,7 @@ export class TableOfContentsApi extends BaseApi {
         });
     }
 
-    return promise.then(data => {
+    var t = promise.then(data => {
       let regionTopoJson = data;
       let state = topojson.feature(regionTopoJson, regionTopoJson.objects.state);
       let regions = topojson.feature(regionTopoJson, regionTopoJson.objects.region);
@@ -36,6 +39,8 @@ export class TableOfContentsApi extends BaseApi {
 
       return tableOfContents;
     });
+
+    return t;
   }
 
   getTableOfContents (data) {
@@ -50,7 +55,7 @@ export class TableOfContentsApi extends BaseApi {
         stateModel.id = prop.gid;
         stateModel.name = prop.name;
         stateModel.centroidLatitude = NaN;
-        stateModel.shortName = prop.short_name;
+        stateModel.shortName = prop.short_name.toLowerCase();
         stateModel.centroidLongitude = NaN;
         stateModel.parent = null;
         stateModel.type = 'state';
@@ -64,7 +69,7 @@ export class TableOfContentsApi extends BaseApi {
     let regionHash = _(regions.features)
       .map((feature) => {
         let regionModel = new HierarchicalGeometryViewModel();
-        regionModel.shortName = feature.properties.name;
+        regionModel.shortName = feature.properties.name.toLowerCase();
         regionModel.id = feature.properties.gid;
         regionModel.name = feature.properties.name;
         regionModel.geometry = feature;
@@ -105,21 +110,46 @@ export class TableOfContentsApi extends BaseApi {
       })
       .value();
 
-    let streamHash = _(streams.features)
+    let streamViewModels = _(streams.features)
+      .filter((feature) => {
+        let properties = feature.properties;
+        if (properties.Id == null) {
+          console.log('DEAD PROPERTY FOUND', feature);
+          return false;
+        }
+
+        return true;
+      })
       .map((feature) => {
         let streamModel = new StreamGeometryViewModel();
         let properties = feature.properties;
-        streamModel.id = properties.Id;
+        // HACK. There is an issue with koa-satic that forces it to read these as a problem.
+        let cleanSlug = properties.Slug.replace(/\./gi, '_');
+        streamModel.id = cleanSlug;
+        streamModel.slug = cleanSlug;
         streamModel.name = properties.Name;
         streamModel.geometry = feature;
         streamModel.visible = true;
+
         streamModel.centroidLongitude = properties.CentroidLongitude;
         streamModel.centroidLatitude = properties.CentroidLatitude;
+
+        streamModel.maximumLatitude = properties.Maximum_Latitude;
+        streamModel.maximumLongitude = properties.Maximum_Longitude;
+        streamModel.minimumLatitude = properties.Minimum_Latitude;
+        streamModel.minimumLongitude = properties.Minimum_Longitude;
+
+        streamModel.boundingBox = [[streamModel.minimumLongitude, streamModel.minimumLatitude],
+          [streamModel.maximumLongitude, streamModel.maximumLatitude]];
+
         _.extend(streamModel, properties);
         streamModel.type = 'streamCentroid';
         return streamModel;
-      })
-      .sortBy('name')
+      });
+
+    let streamHashBySlug = streamViewModels.keyBy('slug').value();
+
+    let streamHash = streamViewModels.sortBy('name')
       .keyBy('id')
       .value();
 
@@ -147,7 +177,15 @@ export class TableOfContentsApi extends BaseApi {
         // what to do about the parent tho?
       });
     });
-    return {states: _(stateHash).values().value(), streams: _(streamHash).values().value()};
+    return {
+      states: _(stateHash).values().value(),
+      statesHash: stateHash,
+      streams: _(streamHash).values().value(),
+      streamsHash: streamHash,
+      streamsBySlug: streamHashBySlug,
+      regions: _(regionHash).values().value(),
+      regionsHash: regionHash
+    };
   }
 }
 

@@ -133,7 +133,6 @@ webpackConfig.module.loaders.push({
   ]
 });
 
-console.log('==========================================');
 let myPathOfInterest = paths.client('ui');
 console.log(myPathOfInterest);
 

@@ -1,0 +1,55 @@
+@import "styles/colors";
+
+.header-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justifiy-content: flex-start;
+  align-items: stretch;
+  alight-content: stretch;
+  margin: 0 10px 0 10px;
+}
+
+.container {
+  padding: 10px 0 10px 0;
+}
+
+.selected {
+  composes: container;
+  background-color: #0a0a0a;
+}
+
+.container:hover {
+  background-color: #050505;
+  cursor: pointer;
+}
+
+.title {
+  vertical-align: middle;
+  font-size: 18px;
+  margin: 0 0 0 10px;
+}
+
+.primary {
+  order: 0;
+  flex-basis: auto;
+  align-self: stretch;
+  flex-grow: 1;
+}
+
+.details {
+  composes: header-container;
+  order: 1;
+  flex-basis: auto;
+  align-self: flex-start;
+}
+
+.stuff {
+  margin: 5px 0px 0px 0px;
+
+  // padding-right: 10px;
+}
+
+.stream-list-item {
+  margin: 10px 0px;
+}

@@ -20,43 +20,44 @@ export const MapComponent = React.createClass({
   },
 
   componentDidMount () {
-    debugger;
     mapboxgl.accessToken = this.props.token;
     this.map = new mapboxgl.Map(this.props.view);
-
+    let map = this.map;
     this.map.on('style.load', () => {
-      this.map.addSource('satellite', {
-        type: 'raster',
-        url: 'mapbox://mapbox.satellite'
-      });
-      this.map.addLayer({
-        'id': 'satellite',
-        'type': 'raster',
-        'source': 'satellite',
-        'layout': {
-          'visibility': 'none'
-        }
-      });
+      setTimeout(() => map.resize(), 500);
+
+      // this.map.addSource('satellite', {
+      //   type: 'raster',
+      //   url: 'mapbox://mapbox.satellite'
+      // });
+      // this.map.addLayer({
+      //   'id': 'satellite',
+      //   'type': 'raster',
+      //   'source': 'satellite',
+      //   'layout': {
+      //     'visibility': 'none'
+      //   }
+      // });
 
       if (this.props.onStyleLoad) {
-        this.props.onStyleLoad(this.map);
+        // this.props.onStyleLoad(this.map);
       }
     });
   },
 
   componentDidUpdate () {
-    if (this.props.baselayer === 'satellite') {
-      this.map.setLayoutProperty('satellite', 'visibility', 'visible');
-    } else {
-      this.map.setLayoutProperty('satellite', 'visibility', 'none');
-    }
+    // if (this.props.baselayer === 'satellite') {
+    //   this.map.setLayoutProperty('satellite', 'visibility', 'visible');
+    // } else {
+    //   this.map.setLayoutProperty('satellite', 'visibility', 'none');
+    // }
   },
 
   componentWillUnmount () {
     this.map.remove();
   },
 
-  
+
   render () {
     return (
       <div style={this.props.mapStyle} id='mapThing'></div>

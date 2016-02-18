@@ -1,5 +1,6 @@
 @import "base";
 @import "vendor/normalize";
+@import "colors";
 
 // Some best-practice CSS that's useful for most apps
 // Just remove them if they're not what you want
@@ -14,6 +15,14 @@ body {
   height: 100%;
   touch-action: manipulation;
   background: black;
+  font-family: sans-serif;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+
+  /* no underline */
 }
 
 *,

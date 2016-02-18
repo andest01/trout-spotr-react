@@ -2,10 +2,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { actions as streamActions } from '../streams.actions';
-import StreamFilterComponent from '../filter/StreamFilter.component';
 import StreamItemContainer from './item/StreamItem.container';
-// import StreamItemContainer from './streamItem/StreamItemContainer';
-// import classes from './HomeView.scss';
+
+import countyStyles from './CountyComponent.style.scss';
 
 const mapStateToProps = (state) => {
   let obj = {
@@ -39,41 +38,14 @@ export class StreamListContainer extends React.Component {
   };
 
   render () {
-    let regions = [];
-    let mn = this.props.tableOfContents[0];
-    if (mn != null) {
-      regions = mn.children;
-    }
-
-    let counties = [];
-    if (mn != null && this.props.selectedRegion['id'] != null) {
-      counties = this.props.selectedRegion.children;
-    }
+    let counties = this.props.selectedRegion.children || [];
     return (
-      <div className='container text-center'>
-        <button className='btn btn-default'
-                onClick={() => this.props.loadStreams()}>
-          Load Streams
-        </button>
-        <div>
-          <StreamFilterComponent
-            selectedRegion={this.props.selectedRegion}
-            filter={this.props.filter}
-            tableOfContents={this.props.tableOfContents}
-            filterStreams={this.props.filterStreams}/>
-        </div>
-        <div>
-        {
-          regions.map((region) => {
-            return (<button onClick={() => this.props.selectRegion(region)} key={region.id}> {region.name}</button>);
-          })
-        }
-        </div>
+      <div>
         <div>
           {
             counties.map((county) => {
               return (<div key={county.id}>
-                        <h3>{county.name}</h3>
+                        <h3 className={countyStyles.container}><span className={countyStyles.title}>{county.name} County</span></h3>
                         <ul>
                           {
                               county.children.filter((stream) => stream.visible).map((stream) => { return (<li key={stream.id}><StreamItemContainer stream={stream}/></li>); })

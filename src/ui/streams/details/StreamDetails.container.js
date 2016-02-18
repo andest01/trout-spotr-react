@@ -38,7 +38,7 @@ export const StreamDetailsContainer = React.createClass({
 
   componentDidMount () {
     console.log('stream is loading', this.props.params.streamId);
-    
+
   },
 
   componentWillUnmount () {
@@ -48,7 +48,7 @@ export const StreamDetailsContainer = React.createClass({
   render () {
     return (
       <div className='container text-center'>
-        
+
       </div>
     );
   }

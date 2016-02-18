@@ -20,9 +20,8 @@ export class TableOfContentsApi extends BaseApi {
       }
 
       var path = createPath(stateId, regionId);
-      return this.doCall({}, 'assets/data/' + path);
+      return super.get('assets/data/' + path);
     }
-
 }
 
 export default new TableOfContentsApi();

@@ -1,0 +1,32 @@
+@import "styles/colors";
+
+.primary {
+  order: 0;
+  flex-basis: auto;
+  align-self: stretch;
+  flex-grow: 1;
+}
+
+.streamRatio {
+  composes: icon from "../dataIcon.style.scss";
+  font-size: x-small;
+  display: flex;
+  flex-direction: row;
+}
+
+.numerator {
+  composes: streamRatio;
+  color: $BROOK_TROUT;
+  margin-right: 5px;
+}
+
+.denominator {
+  composes: streamRatio;
+  color: $COOL_WATER;
+  margin-right: 5px;
+}
+
+.inactive {
+  composes: streamRatio;
+  color: $QUIET_GRAY;
+}

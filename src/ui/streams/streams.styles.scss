@@ -19,11 +19,18 @@
   overflow: hidden;
 }
 
+.map {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 100%;
+}
+
 .sidebar {
   order: 1;
-  background-color: green;
+  background-color: #111;
   min-width: 300px;
-  max-width: 400px;
+  max-width: 330px;
 }
 
 .lrg-content {
@@ -41,11 +48,11 @@
 }
 
 .flexbox-top {
-  background-color: orange;
+  background-color: #111;
 }
 
 .flexbox-bottom {
-  background-color: green;
+  background-color: #111;
   flex-grow: 1;
   overflow-y: auto;
   height: 100%;

@@ -101,7 +101,7 @@ export const RegionMapComponent = React.createClass({
                         let streamId = stream.id;
                         let name = stream.name;
                         return (
-                            <li key={streamId}>{name}</li>
+                            <li key={streamId}>{name} lolol</li>
                           );
                       })
                     }
