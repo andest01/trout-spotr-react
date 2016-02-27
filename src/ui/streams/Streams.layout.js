@@ -1,5 +1,6 @@
 'use strict';
 import React from 'react';
+import MediaQuery from 'react-responsive';
 // import SidebarContainer from './sidebar/Sidebar.container';
 import { Link } from 'react-router';
 import { connect } from 'react-redux';
@@ -158,32 +159,32 @@ export const StreamsLayout = React.createClass({
     let regions = this.getRegions(stateId);
     let counties = this.getCounties(stateId, regionId);
 
-    return (<div className={styles['layout']}>
-
+    return (
+      <div className={styles['layout']}>
         <div className={styles['sidebar']}>
-      <div className={styles['flexbox-parent']}>
-        <div className={styles['flexbox-top']}>
-          <StreamFilterContainer
-            tableOfContents={this.props.tableOfContents}
+          <div className={styles['flexbox-parent']}>
+            <div className={styles['flexbox-top']}>
+              <StreamFilterContainer
+                tableOfContents={this.props.tableOfContents}
+                selectedState={this.props.selectedState}
+                selectedRegion={this.props.selectedRegion}
+                filter={this.props.filter}
+                selectState={this.props.selectState}
+                selectRegion={this.props.selectRegion} />
+            </div>
+            <div className={styles['flexbox-bottom']}>
+              <StreamListContainer />
+            </div>
+          </div>
+        </div>
+        <div className={styles['lrg-content']}>
+          <MediaQuery query='(min-width: 1224px)'>
+          <MapContainer
             selectedState={this.props.selectedState}
             selectedRegion={this.props.selectedRegion}
-            filter={this.props.filter}
-            selectState={this.props.selectState}
-            selectRegion={this.props.selectRegion} />
+            selectedStream={this.props.selectedStream}/>
+          </MediaQuery>
         </div>
-        <div className={styles['flexbox-bottom']}>
-          <StreamListContainer />
-        </div>
-
-      </div>
-    </div>
-
-    <div className={styles['lrg-content']}>
-        <MapContainer
-          selectedState={this.props.selectedState}
-          selectedRegion={this.props.selectedRegion}
-          selectedStream={this.props.selectedStream}/>
-    </div>
       </div>);
   }
 });
