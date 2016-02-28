@@ -1,6 +1,7 @@
 import React from 'react';
 import '../../styles/core.scss';
 import style from './coreLayout.style.scss';
+import { Link } from 'react-router';
 // Note: Stateless/function components *will not* hot reload!
 // react-transform *only* works on component classes.
 //
@@ -13,6 +14,7 @@ import style from './coreLayout.style.scss';
 function CoreLayout ({ children }) {
   return (
       <div className={style['body']}>
+        <Link to='/streams'>Streams</Link>
         {children}
       </div>
   );
