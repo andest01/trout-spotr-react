@@ -50,7 +50,8 @@ export const StreamsLayout = React.createClass({
     selectRegion: React.PropTypes.func.isRequired,
     selectState: React.PropTypes.func.isRequired,
     selectStateAndRegion: React.PropTypes.func.isRequired,
-    children: React.PropTypes.object
+    children: React.PropTypes.object,
+    params: React.PropTypes.object
   },
 
   onStateClick () {
@@ -81,10 +82,10 @@ export const StreamsLayout = React.createClass({
   },
 
   componentWillMount () {
-    // let stateId = this.props.params.stateId || null;
-    // let regionId = this.props.params.regionId || null;
-    // let streamId = this.props.params.streamSlug || null;
-    // var t = this.props.loadStreams({stateId, regionId, streamId})
+    let stateId = this.props.params.stateId || null;
+    let regionId = this.props.params.regionId || null;
+    let streamId = this.props.params.streamSlug || null;
+    this.props.loadStreams({stateId, regionId, streamId});
     //   .then(x => {
     //     // console.log(x);
     //     // debugger;
