@@ -12,7 +12,6 @@ export default (
   <Route path='/' component={CoreLayout}>
     <IndexRoute component={StreamListContainer}/>
     <Route path='/404' component={NotFoundView}/>
-    
     <Route path='/:stateId' component={StreamsLayout}/>
     <Route path='/:stateId/:regionId' component={StreamsLayout}/>
     <Route path='/:stateId/:regionId/:streamSlug' component={StreamsLayout}/>

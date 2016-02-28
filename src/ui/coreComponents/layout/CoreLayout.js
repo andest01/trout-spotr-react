@@ -18,7 +18,6 @@ function CoreLayout ({ children }) {
         <div className='right'>
           <Link to='/streams'>Streams</Link>
         </div>
-        
         <StreamsLayout/>
       </div>
   );
