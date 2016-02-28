@@ -53,3 +53,25 @@
 .stream-list-item {
   margin: 10px 0px;
 }
+
+// Mobile, landscape.
+@media screen and (orientation: landscape) and (max-width: 600px) {
+  .title {
+    font-size: 12px;
+  }
+
+  // .lrg-content {
+  //   //order: 2;
+  //   background-color: brown;
+
+  //   //flex-grow: 1;
+
+  // }
+
+  // .sidebar {
+  //   background-color: pink;
+  //   width: 200px;
+  //   min-width: 200px;
+  //   max-width: 200px;
+  // }
+}

@@ -1,6 +1,6 @@
+/*global mapboxgl*/
 'use strict';
-
-import React, { Component } from 'react';
+import React from 'react';
 
 // NotWorkingShimInstead import mapboxgl from 'mapbox-gl';
 require('script!mapbox-gl/dist/mapbox-gl-dev.js');
@@ -56,7 +56,6 @@ export const MapComponent = React.createClass({
   componentWillUnmount () {
     this.map.remove();
   },
-
 
   render () {
     return (

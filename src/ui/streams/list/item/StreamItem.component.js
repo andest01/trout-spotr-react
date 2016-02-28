@@ -4,7 +4,7 @@ import { Link } from 'react-router';
 import { connect } from 'react-redux';
 import StreamRatioTextContainer from 'ui/coreComponents/dataIcon/streamRatioText/StreamRatioText.container';
 const { routeActions } = require('redux-simple-router');
-import _ from 'lodash';
+// import _ from 'lodash';
 import { actions as streamActions } from '../../streams.actions';
 import style from './StreamItem.style.scss';
 var allActions = Object.assign({}, streamActions, routeActions);
@@ -51,7 +51,7 @@ export const StreamItemComponent = React.createClass({
     }
     let containerClass = isSelected ? style['selected'] : style['container'];
     return (
-      <Link to={url}  onClick={this.onStreamSelect} >
+      <Link to={url} onClick={this.onStreamSelect} >
         <div className={containerClass}>
           <div className={style['header-container']}>
             <div className={style['primary']}>

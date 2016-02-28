@@ -1,6 +1,6 @@
 'use strict';
 import React from 'react';
-import { Link } from 'react-router';
+// import { Link } from 'react-router';
 import { connect } from 'react-redux';
 const { routeActions } = require('redux-simple-router');
 

@@ -5,8 +5,8 @@ import NotFoundView from 'ui/notFound/NotFoundView';
 import StreamListContainer from 'ui/streams/list/StreamList.container';
 // import StreamDetailsContainer from 'ui/streams/details/StreamDetails.container';
 import StreamsLayout from 'ui/streams/Streams.layout';
-import StateContainer from 'ui/streams/state/State.container';
-import RegionMapContainer from 'ui/streams/regionMap/RegionMap.container';
+// import StateContainer from 'ui/streams/state/State.container';
+// import RegionMapContainer from 'ui/streams/regionMap/RegionMap.container';
 
 export default (
   <Route path='/' component={CoreLayout}>

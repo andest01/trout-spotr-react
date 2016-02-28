@@ -21,7 +21,6 @@
 //   document.getElementById('root')
 // );
 
-
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { useRouterHistory } from 'react-router';

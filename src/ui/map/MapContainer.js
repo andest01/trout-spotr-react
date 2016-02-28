@@ -1,7 +1,8 @@
+/*global mapboxgl*/
 'use strict';
 
 import React from 'react';
-import { connect } from 'react-redux';
+// import { connect } from 'react-redux';
 import GLMap from './MapComponent';
 let mapToken = 'pk.eyJ1IjoiYW5kZXN0MDEiLCJhIjoibW02QnJLSSJ9._I2ruvGf4OGDxlZBU2m3KQ';
 require('script!mapbox-gl/dist/mapbox-gl-dev.js');
@@ -9,9 +10,8 @@ import turf from 'turf';
 import _ from 'lodash';
 // import styles from '../streams/streams.styles.scss';
 
-
-const STREAM_CENTROID_SOURCE = 'STREAM_CENTROID_SOURCE';
-const STREAM_CENTROID_LAYER = 'STREAM_CENTROID_LAYER';
+// const STREAM_CENTROID_SOURCE = 'STREAM_CENTROID_SOURCE';
+// const STREAM_CENTROID_LAYER = 'STREAM_CENTROID_LAYER';
 // const mapStateToProps = (state) => {
 //   let obj = {
 //     streamsGeoJSON: state.streamList.streamsGeoJSON,
@@ -51,10 +51,10 @@ export const MapContainer = React.createClass({
     let boundingBox = selectedStream.boundingBox;
     setTimeout(() => {
       map.fitBounds(boundingBox, {
-            speed: 0.9,
-            padding: 100,
-            pitch: 20
-          });
+        speed: 0.9,
+        padding: 100,
+        pitch: 20
+      });
     }, 1);
   },
 
@@ -78,7 +78,7 @@ export const MapContainer = React.createClass({
       return;
     }
     let selectedRegion = this.props.selectedRegion;
-    let counties = selectedRegion.children;  //_.flatten(_.property(selectedRegion, 'children'));
+    let counties = selectedRegion.children;  // _.flatten(_.property(selectedRegion, 'children'));
     let streams = _.flatMap(counties, x => x.children);
     let geoJsonPoints = streams.map(s => {
       return turf.point([s.CentroidLongitude, s.CentroidLatitude], s);
@@ -95,10 +95,10 @@ export const MapContainer = React.createClass({
     setTimeout(() => {
       let bounds = mapboxgl.LngLatBounds.convert(wsenBoundingBox);
       map.fitBounds(bounds, {
-            speed: 2.0,
-            padding: 100,
-            pitch: 0
-          });
+        speed: 2.0,
+        padding: 100,
+        pitch: 0
+      });
     }, 1);
   },
 
@@ -163,8 +163,6 @@ export const MapContainer = React.createClass({
     );
   }
 });
-
-
 
 // export default connect(mapStateToProps, mapActions)(MapContainer);
 export default MapContainer;
