@@ -12,10 +12,10 @@ export default (
   <Route path='/' component={CoreLayout}>
     <IndexRoute component={StreamListContainer}/>
     <Route path='/404' component={NotFoundView}/>
-    <Route path='/streams' component={StreamsLayout}/>
-    <Route path='/streams/:stateId' component={StreamsLayout}/>
-    <Route path='/streams/:stateId/:regionId' component={StreamsLayout}/>
-    <Route path='/streams/:stateId/:regionId/:streamSlug' component={StreamsLayout}/>
+    
+    <Route path='/:stateId' component={StreamsLayout}/>
+    <Route path='/:stateId/:regionId' component={StreamsLayout}/>
+    <Route path='/:stateId/:regionId/:streamSlug' component={StreamsLayout}/>
     <Redirect from='*' to='404' />
   </Route>
 );

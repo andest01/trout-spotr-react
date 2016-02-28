@@ -82,6 +82,10 @@ export const StreamsLayout = React.createClass({
   },
 
   componentWillMount () {
+    if (this.props.params == null) {
+      this.props.loadStreams({stateId: null, regionId: null, streamId: null});
+      return;
+    }
     let stateId = this.props.params.stateId || null;
     let regionId = this.props.params.regionId || null;
     let streamId = this.props.params.streamSlug || null;

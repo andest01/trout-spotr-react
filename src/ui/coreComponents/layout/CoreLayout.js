@@ -2,6 +2,7 @@ import React from 'react';
 import '../../styles/core.scss';
 import style from './coreLayout.style.scss';
 import { Link } from 'react-router';
+import StreamsLayout from 'ui/streams/Streams.layout';
 // Note: Stateless/function components *will not* hot reload!
 // react-transform *only* works on component classes.
 //
@@ -14,8 +15,11 @@ import { Link } from 'react-router';
 function CoreLayout ({ children }) {
   return (
       <div className={style['body']}>
-        <Link to='/streams'>Streams</Link>
-        {children}
+        <div className='right'>
+          <Link to='/streams'>Streams</Link>
+        </div>
+        
+        <StreamsLayout/>
       </div>
   );
 }
